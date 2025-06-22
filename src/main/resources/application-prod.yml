@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sslmonitor
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+  
+  h2:
+    console:
+      enabled: false
+
+# SSL Monitor Configuration for production
+ssl:
+  monitor:
+    thresholds:
+      critical: 7
+      warning: 30
+      info: 90
+    
+    schedule:
+      daily: "0 0 6 * * ?"
+      hourly: "0 0 * * * ?"
+    
+    http:
+      connect-timeout: 10000
+      read-timeout: 10000
+      max-retries: 3
+    
+    async:
+      core-pool-size: 10
+      max-pool-size: 50
+      queue-capacity: 200
+    
+    webhook:
+      enabled: true
+      url: ""
+      timeout: 5000
+
+# Logging for production
+logging:
+  level:
+    org.avengers.boilerplate: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ssl-monitor.log 

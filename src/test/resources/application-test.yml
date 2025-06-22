@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  h2:
+    console:
+      enabled: false
+
+# SSL Monitor Configuration for testing
+ssl:
+  monitor:
+    thresholds:
+      critical: 7
+      warning: 30
+      info: 90
+    
+    schedule:
+      daily: "0 0 6 * * ?"
+      hourly: "0 0 * * * ?"
+    
+    http:
+      connect-timeout: 5000
+      read-timeout: 5000
+      max-retries: 2
+    
+    async:
+      core-pool-size: 2
+      max-pool-size: 5
+      queue-capacity: 10
+    
+    webhook:
+      enabled: false
+      url: ""
+      timeout: 3000
+
+# Logging for tests
+logging:
+  level:
+    org.avengers.boilerplate: DEBUG
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN 

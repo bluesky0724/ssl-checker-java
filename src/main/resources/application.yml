@@ -1,0 +1,109 @@
+spring:
+  application:
+    name: ssl-monitor
+  
+  #  datasource:
+  #    url: jdbc:h2:mem:sslmonitor
+  #    driver-class-name: org.h2.Driver
+  #    username: sa
+  #    password: password
+  #
+  #  jpa:
+  #    hibernate:
+  #      ddl-auto: create-drop
+  #    show-sql: false
+  #    properties:
+  #      hibernate:
+  #        format_sql: true
+  #        dialect: org.hibernate.dialect.H2Dialect
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # For production, use PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sslmonitor
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# SSL Monitor Configuration
+ssl:
+  monitor:
+    # Default thresholds in days
+    thresholds:
+      critical: 7
+      warning: 30
+      info: 90
+    
+    # Scheduled check intervals (cron expressions)
+    schedule:
+      daily: "0 0 6 * * ?"  # Daily at 6 AM
+      hourly: "0 0 * * * ?" # Every hour
+    
+    # HTTP client configuration
+    http:
+      connect-timeout: 10000  # 10 seconds
+      read-timeout: 10000     # 10 seconds
+      max-retries: 3
+    
+    # Async processing
+    async:
+      core-pool-size: 5
+      max-pool-size: 20
+      queue-capacity: 100
+    
+    # Webhook configuration
+    webhook:
+      enabled: false
+      url: ""
+      timeout: 5000
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging configuration
+logging:
+  level:
+    org.avengers.boilerplate: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ssl-monitor.log
+
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+# OpenAPI configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method 
